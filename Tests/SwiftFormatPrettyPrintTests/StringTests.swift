@@ -1,3 +1,5 @@
+import SwiftFormatConfiguration
+
 final class StringTests: PrettyPrintTestCase {
   func testStrings() {
     let input =
@@ -457,5 +459,39 @@ final class StringTests: PrettyPrintTestCase {
       """##
 
     assertPrettyPrintEqual(input: input, expected: input + "\n", linelength: 20)
+  }
+
+  func testMultilineStringWithTabs() {
+    let input =
+      #"""
+      let someString = """
+      	this is a multiline string
+      	with tab indentations
+      		that preserves extra tabs
+      	    	  and whitespaces
+      or inserts tabs
+          	    while fixing inconsistent formatting
+      	as needed to match the closing marks
+      	"""
+      """#
+
+    let expected =
+      #"""
+      let someString = """
+      	this is a multiline string
+      	with tab indentations
+      		that preserves extra tabs
+      	    	  and whitespaces
+      	or inserts tabs
+      	while fixing inconsistent formatting
+      	as needed to match the closing marks
+      	"""
+
+      """#
+
+    var config = Configuration()
+    config.indentation = .tabs(1)
+    config.tabWidth = 4
+    assertPrettyPrintEqual(input: input, expected: expected, linelength: 30, configuration: config)
   }
 }
